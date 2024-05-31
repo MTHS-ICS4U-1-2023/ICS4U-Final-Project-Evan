@@ -4,9 +4,10 @@ ICS4U Final Project
 
 Guitar To Tab - Audio Processor
 
-
 - This project is divided into seperate Frontend and Backend projects
 - Over time, whenever by backend code starts functioning I will merge it with my frontend and test if it works in the frontend. 
+
+
 
 Flask (Frontend) -->
 

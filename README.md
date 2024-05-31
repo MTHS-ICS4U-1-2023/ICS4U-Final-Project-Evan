@@ -13,6 +13,7 @@ Version 2:
 
 - Uses flask to allow a user to record audio on an HTML page and play it back. 
 
+----------------------------------------------------------------------------------------
   
 Audio Processing (Backend) -->
 

@@ -1,39 +1,74 @@
+import pyaudio
+import wave
+import matplotlib.pyplot as plt
 import numpy as np
-import tqdm
 
-# !rm /content/*.png
+FRAMES_PER_BUFFER = 3200
+FORMAT = pyaudio.paInt16
+CHANNELS = 1
+RATE = 16000
 
-# See https://newt.phys.unsw.edu.au/jw/notes.html
-def freq_to_number(f): return 69 + 12*np.log2(f/440.0)
-def number_to_freq(n): return 440 * 2.0**((n-69)/12.0)
-def note_name(n): return NOTE_NAMES[n % 12] + str(int(n/12 - 1))
+PY_AUDIO = pyaudio.PyAudio()
 
-# Hanning window function
-window = 0.5 * (1 - np.cos(np.linspace(0, 2*np.pi, FFT_WINDOW_SIZE, False)))
+stream = PY_AUDIO.open(
+    format=FORMAT,
+    channels=CHANNELS,
+    rate=RATE,
+    input=True,
+    frames_per_buffer=FRAMES_PER_BUFFER
+)
 
-xf = np.fft.rfftfreq(FFT_WINDOW_SIZE, 1/fs)
-FRAME_COUNT = int(AUDIO_LENGTH*FPS)
-FRAME_OFFSET = int(len(audio)/FRAME_COUNT)
+print('start recording')
 
-# Pass 1, find out the maximum amplitude so we can scale.
-mx = 0
-for frame_number in range(FRAME_COUNT):
-  sample = extract_sample(audio, frame_number)
+seconds = 8
+frames = []
+second_tracking = 0
+second_count = 0
+for i in range(0, int(RATE/FRAMES_PER_BUFFER*seconds)):
+    data = stream.read(FRAMES_PER_BUFFER)
+    frames.append(data)
+    second_tracking += 1
+    if second_tracking == RATE/FRAMES_PER_BUFFER:
+        second_count += 1
+        second_tracking = 0
+        print(f'Time Left: {seconds - second_count} seconds')
 
-  fft = np.fft.rfft(sample * window)
-  fft = np.abs(fft).real 
-  mx = max(np.max(fft),mx)
 
-print(f"Max amplitude: {mx}")
+stream.stop_stream()
+stream.close()
+PY_AUDIO.terminate()
 
-# Pass 2, produce the animation
-for frame_number in tqdm.tqdm(range(FRAME_COUNT)):
-  sample = extract_sample(audio, frame_number)
+obj = wave.open('lemaster_tech.wav', 'wb')
+obj.setnchannels(CHANNELS)
+obj.setsampwidth(PY_AUDIO.get_sample_size(FORMAT))
+obj.setframerate(RATE)
+obj.writeframes(b''.join(frames))
+obj.close()
 
-  fft = np.fft.rfft(sample * window)
-  fft = np.abs(fft) / mx 
-     
-  s = find_top_notes(fft,TOP_NOTES)
 
-  fig = plot_fft(fft.real,xf,fs,s,RESOLUTION)
-  fig.write_image(f"/content/frame{frame_number}.png",scale=2)
+file = wave.open('lemaster_tech.wav', 'rb')
+
+sample_freq = file.getframerate()
+frames = file.getnframes()
+signal_wave = file.readframes(-1)
+
+file.close()
+
+time = frames / sample_freq
+
+
+# if one channel use int16, if 2 use int32
+audio_array = np.frombuffer(signal_wave, dtype=np.int16)
+
+times = np.linspace(0, time, num=frames)
+
+plt.figure(figsize=(15, 5))
+plt.plot(times, audio_array)
+plt.ylabel('Signal Wave')
+plt.xlabel('Time (s)')
+plt.xlim(0, time)
+plt.title('The Thing I Just Recorded!!')
+plt.show()
+
+exit()
+

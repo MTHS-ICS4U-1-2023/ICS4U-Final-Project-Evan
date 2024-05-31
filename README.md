@@ -4,10 +4,10 @@
 - Over time, whenever by backend code starts functioning I will merge it with my frontend and test if it works in the frontend. 
 
 Flask (Frontend) -->
-Version 1: 
+Version 1
 -Hello World program running using Flask
 
-Version 2: 
+Version 2 
 -Uses flask to allow a user to record audio on an HTML page and play it back. 
   
 Audio Processing (Backend) -->

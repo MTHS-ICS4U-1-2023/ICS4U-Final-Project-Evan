@@ -23,7 +23,7 @@ stream = PY_AUDIO.open(
 
 print('start recording')
 
-seconds = 8
+seconds = 20
 frames = []
 second_tracking = 0
 second_count = 0
@@ -73,5 +73,5 @@ plt.xlim(0, time)
 plt.title('This is the test audio!')
 plt.show()
 
-exit()
+
 

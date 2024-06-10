@@ -43,6 +43,10 @@ def find_closest_note(pitch):
   return closest_note, closest_pitch
 
 HANN_WINDOW = np.hanning(WINDOW_SIZE)
+
+# List to store detected notes
+detected_notes = []
+
 def callback(indata, frames, time, status):
   """
   Callback function of the InputStream method.
@@ -72,7 +76,7 @@ def callback(indata, frames, time, status):
     hann_samples = callback.window_samples * HANN_WINDOW
     magnitude_spec = abs(scipy.fftpack.fft(hann_samples)[:len(hann_samples)//2])
 
-    # supress mains hum, set everything below 62Hz to zero
+    # suppress mains hum, set everything below 62Hz to zero
     for i in range(int(62/DELTA_FREQ)):
       magnitude_spec[i] = 0
 
@@ -113,6 +117,7 @@ def callback(indata, frames, time, status):
 
     os.system('cls' if os.name=='nt' else 'clear')
     if callback.noteBuffer.count(callback.noteBuffer[0]) == len(callback.noteBuffer):
+      detected_notes.append(closest_note) # Store detected note
       print(f"Closest note: {closest_note} {max_freq}/{closest_pitch}")
     else:
       print(f"Closest note: ...")
@@ -125,5 +130,8 @@ try:
   with sd.InputStream(channels=1, callback=callback, blocksize=WINDOW_STEP, samplerate=SAMPLE_FREQ):
     while True:
       time.sleep(0.5)
+except KeyboardInterrupt:
+  print("Stopping the tuner and printing detected notes...")
+  print("Detected notes: ", detected_notes)
 except Exception as exc:
   print(str(exc))

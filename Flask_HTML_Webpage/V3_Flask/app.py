@@ -2,6 +2,7 @@ import copy
 import numpy as np
 import scipy.fftpack
 import sounddevice as sd
+import soundfile as sf
 import time
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, emit
@@ -43,19 +44,29 @@ def index():
 @socketio.on('audio_data')
 def handle_audio_data(data):
     global detected_notes
-    audio_samples = np.frombuffer(data, dtype=np.int16).astype(np.float32) / 32768.0
-    detected_notes = process_audio(audio_samples)
+    try:
+        audio_samples = np.frombuffer(data, dtype=np.int16).astype(np.float32) / 32768.0
+        detected_notes = process_audio(audio_samples)
+
+        # Save the audio data to a .wav file
+        sf.write('recorded_audio.wav', audio_samples, SAMPLE_FREQ)
+
+        # Play back the recorded audio
+        sd.play(audio_samples, SAMPLE_FREQ)
+        sd.wait()
+    except Exception as e:
+        print(f"Error handling audio data: {e}")
+    
     emit('notes', detected_notes)
 
 
 def process_audio(indata):
     if not hasattr(process_audio, "window_samples"):
-        process_audio.window_samples = [0 for _ in range(WINDOW_SIZE)]
+        process_audio.window_samples = np.zeros(WINDOW_SIZE, dtype=np.float32)
     if not hasattr(process_audio, "noteBuffer"):
         process_audio.noteBuffer = ["1", "2"]
 
-    process_audio.window_samples = np.concatenate((process_audio.window_samples, indata))  # append new samples
-    process_audio.window_samples = process_audio.window_samples[len(indata):]  # remove old samples
+    process_audio.window_samples = np.concatenate((process_audio.window_samples, indata))[-WINDOW_SIZE:]  # append new samples and keep the window size
 
     # skip if signal power is too low
     signal_power = (np.linalg.norm(process_audio.window_samples, ord=2) ** 2) / len(process_audio.window_samples)

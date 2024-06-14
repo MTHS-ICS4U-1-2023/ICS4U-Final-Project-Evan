@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Maker 3000</title>
+</head>
+<body>
+    <h1>Song Maker 300</h1>
+    <button id="startButton">Start Recording</button>
+    <button id="stopButton"  >Stop Recording</button>
+    <button id="retry" onclick="location.reload()">Retry</button>
+    <div id="output"></div>
+    <div id="tablature"></div>
+
+    <script>
+        document.getElementById('startButton').addEventListener('click', function() {
+            fetch('/start', {method: 'POST'})
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('output').innerText = data.status;
+                });
+        });
+
+        document.getElementById('stopButton').addEventListener('click', function() {
+            fetch('/stop', {method: 'POST'})
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('output').innerText = data.status;
+                    const notes = data.notes;
+                    let tablature = '<pre>';
+                    for (let i = 6; i > 0; i--) {
+                        tablature += i + ' |-';
+                        for (let j = 0; j < notes.length; j++) {
+                            if (notes[j].string === i) {
+                                tablature += notes[j].fret + '-';
+                            } else {
+                                tablature += '--';
+                            }
+                        }
+                        tablature += '\n';
+                    }
+                    tablature += '</pre>';
+                    document.getElementById('tablature').innerHTML = tablature;
+                });
+        });
+    </script>
+</body>
+</html>

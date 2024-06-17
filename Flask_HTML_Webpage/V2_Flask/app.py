@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+"""
+Created by: Evan Beaudoin
+Created on: May 2024
+This is the Record Audio module
+"""
+
 from flask import Flask, render_template, request, send_from_directory
 import os
 from datetime import datetime

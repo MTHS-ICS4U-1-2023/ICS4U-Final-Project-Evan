@@ -6,7 +6,7 @@ It is seperated into two folders:
 
  - Flask Web App
 
-As I am able to get my audio processing algorithms and complex mathemetical stuff working in the terminal I then get it working with flask, this is my I seperates the two folders. 
+As I am able to get my audio processing algorithms and complex mathemetical stuff working in the terminal I then get it working with flask, this is why I seperate the two folders. 
 
 Each folder has different versions, as my code eventually develops into a more final product. Here is more information on the different day by day working of these versions. 
 

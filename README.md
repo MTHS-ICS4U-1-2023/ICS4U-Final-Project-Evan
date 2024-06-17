@@ -2,9 +2,9 @@ This repository is the development of my web app.
 
 It is seperated into two folders:
 
-Audio Processing
+ - Audio Processing
 
-Flask Web App
+ - Flask Web App
 
 As I am able to get my audio processing algorithms and complex mathemetical stuff working in the terminal I then get it working with flask, this is my I seperates the two folders. 
 

@@ -1,5 +1,10 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
+"""
+Created by: Evan Beaudoin
+Created on: May 2024
+This is program is my first attempt at recording 
+audio and storing it in a .wav file.
+"""
 
 import pyaudio
 import wave
@@ -41,7 +46,7 @@ stream.stop_stream()
 stream.close()
 PY_AUDIO.terminate()
 
-obj = wave.open('test_audio.wav', 'wb')
+obj = wave.open('lemaster_tech.wav', 'wb')
 obj.setnchannels(CHANNELS)
 obj.setsampwidth(PY_AUDIO.get_sample_size(FORMAT))
 obj.setframerate(RATE)
@@ -49,7 +54,7 @@ obj.writeframes(b''.join(frames))
 obj.close()
 
 
-file = wave.open('test_audio.wav', 'rb')
+file = wave.open('lemaster_tech.wav', 'rb')
 
 sample_freq = file.getframerate()
 frames = file.getnframes()
@@ -70,7 +75,7 @@ plt.plot(times, audio_array)
 plt.ylabel('Signal Wave')
 plt.xlabel('Time (s)')
 plt.xlim(0, time)
-plt.title('This is the test audio!')
+plt.title('The Thing I Just Recorded!!')
 plt.show()
 
 exit()

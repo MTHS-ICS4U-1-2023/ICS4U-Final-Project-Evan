@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Real-Time Note Detection</title>
+</head>
+<body>
+    <h1>Real-Time Note Detection</h1>
+    <button onclick="startRecording()">Start Recording</button>
+    <button onclick="stopRecording()">Stop Recording</button>
+    <h2>Detected Notes:</h2>
+    <ul id="notesList"></ul>
+
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+
+        let mediaRecorder;
+        let audioChunks = [];
+
+        socket.on('notes', function(detected_notes) {
+            const notesList = document.getElementById('notesList');
+            notesList.innerHTML = ''; // Clear previous notes
+            detected_notes.forEach(note => {
+                const li = document.createElement('li');
+                li.textContent = note;
+                notesList.appendChild(li);
+            });
+        });
+
+        async function startRecording() {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm; codecs=opus' });
+            mediaRecorder.ondataavailable = event => {
+                audioChunks.push(event.data);
+                if (mediaRecorder.state === 'inactive') {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm; codecs=opus' });
+                    audioChunks = [];
+                    audioBlob.arrayBuffer().then(buffer => {
+                        socket.emit('audio_data', buffer);
+                    });
+                }
+            };
+            mediaRecorder.start(1000); // Collect 1 second of audio chunks
+        }
+
+        function stopRecording() {
+            mediaRecorder.stop();
+        }
+    </script>
+</body>
+</html>

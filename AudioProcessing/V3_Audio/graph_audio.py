@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+"""
+Created by: Evan Beaudoin
+Created on: May 2024
+This program graphs the signal wave of sample audio, then 
+attempts to use an FFT algoritm to extract musical notes.
+"""
+
 import numpy as np
 import scipy.io.wavfile as wav
 import matplotlib.pyplot as plt

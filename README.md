@@ -1,33 +1,20 @@
-# ICS4U-Final-Project-Template
+This repository is the development of my web app.
 
-ICS4U Final Project
+It is seperated into two folders:
 
-Guitar To Tab - Audio Processor
+ - Audio Processing
 
-- This project is divided into seperate Frontend and Backend projects
-- Over time, whenever by backend code starts functioning I will merge it with my frontend and test if it works in the frontend. 
+ - Flask Web App
+
+As I am able to get my audio processing algorithms and complex mathemetical stuff working in the terminal I then get it working with flask, this is why I seperate the two folders. 
+
+Each folder has different versions, as my code eventually develops into a more final product. Here is more information on the different day by day working of these versions. 
+
+Day by Day: https://docs.google.com/document/d/1woEZSBPNdL69zVt8KdX8tPSzcL2n2co5iS57LSp_M7M/edit
+
+After I finishes the project I used Google Cloud Platforms (instead of AWS) to deploy my project on a server. 
+
+Here is the repo that runs the server: https://github.com/evan-beaudoin99/Final_Project_GCP
 
 
-
-Flask (Frontend) -->
-
-Version 1:
-
-- Hello World program running using Flask
-
-Version 2: 
-
-- Uses flask to allow a user to record audio on an HTML page and play it back. 
-
-----------------------------------------------------------------------------------------
-  
-Audio Processing (Backend) -->
-
-Version 1: 
-
-- Uses python to record audio and graph the signal wave using numpy
-
-Version 2:
-
-- Uses python to extract notes by their respective frequencies and displays them through the console. 
-
+Here is the link to my website: https://final-project-gcp-kwhzrinigq-uc.a.run.app/
